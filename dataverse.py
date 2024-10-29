@@ -68,6 +68,7 @@ def scale_numerical_data(df):
 
 def create_model(num_layers, neurons_per_layer, activation_functions, error_function, optimization_method):
     model = keras.Sequential()
+    # Add each layer based on user's input
     for i in range(num_layers):
         model.add(layers.Dense(neurons_per_layer[i], activation=activation_functions[i]))
     model.add(layers.Dense(1))
@@ -102,9 +103,9 @@ def make_prediction(model, scaler_features, scaler_value, onehot_encoder, df):
     # Define valid values from the dataset for location_id, source_id, and identifier
     valid_location_ids = df['location_id'].unique()
     valid_source_ids = df['source_id'].unique()
-    valid_identifiers = onehot_encoder.categories_[0]  # Get unique categories for 'identifier'
+    valid_identifiers = onehot_encoder.categories_[0]
 
-    # Display available options and get inputs with validation
+    # Display available options and get inputs
     print(f"Available location IDs: {valid_location_ids}")
     while True:
         location_id = float(input("Enter location_id: "))
@@ -126,12 +127,11 @@ def make_prediction(model, scaler_features, scaler_value, onehot_encoder, df):
             break
         print("Invalid identifier. Please choose from the list above.")
 
-    # Get other inputs with logical validation
     while True:
         year = int(input("Enter year: "))
-        if 2000 <= year <= 2023:
+        if 2009 <= year <= 2009:
             break
-        print("Year should be between 2000 and 2023.")
+        print("Year must be 2009.")
 
     while True:
         month = int(input("Enter month (1-12): "))
@@ -155,7 +155,7 @@ def make_prediction(model, scaler_features, scaler_value, onehot_encoder, df):
     onehot_encoded = onehot_encoder.transform([[identifier]])
     onehot_encoded_df = pd.DataFrame(onehot_encoded, columns=onehot_encoder.get_feature_names_out(['identifier']))
 
-    # Combine inputs into a DataFrame for prediction
+    # Combine inputs into a DataFrame
     input_df = pd.DataFrame({
         'location_id': [location_id],
         'source_id': [source_id],
@@ -168,7 +168,7 @@ def make_prediction(model, scaler_features, scaler_value, onehot_encoder, df):
     # Add one-hot encoded columns
     input_df = pd.concat([input_df, onehot_encoded_df], axis=1)
 
-    # Scale only the numerical features that the scaler expects
+    # Scale the features that the scaler expects
     input_df_scaled = input_df.copy()
     input_df_scaled[['location_id', 'source_id', 'year', 'month', 'day', 'hour']] = scaler_features.transform(
         input_df[['location_id', 'source_id', 'year', 'month', 'day', 'hour']]
@@ -297,7 +297,7 @@ def main():
         else:
             print("No predictions will be made.\n")
 
-        continue_training = input("Do you want to create a new model? (yes/no): ")
+        continue_training = input("\nDo you want to create a new model? (yes/no): ")
         if continue_training.lower() != 'yes':
             break
 
