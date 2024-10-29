@@ -17,12 +17,12 @@ def load_data(filepath):
 def calculate_statistics(df):
     selected_columns = ['value', 'value_type_id', 'location_id', 'source_id']
     stats = df[selected_columns].agg(['min', 'mean', 'max'])
-    print("\nMax, min values, and average for columns `value`, `value_type_id`, `location_id`, `source_id`:\n")
+    print("\nMax, min, and average values for columns `value`, `value_type_id`, `location_id`, `source_id`:\n")
     print(stats)
 
 
 def categorical_frequencies(df):
-    print("\nFrequency of Categorical Columns:")
+    print("\nFrequency of categorical columns:")
     for col in df.select_dtypes(include=['object']).columns:
         print(f"\n{col}:")
         if col == 'timestamp':
@@ -183,7 +183,7 @@ def make_prediction(model, scaler_features, scaler_value, onehot_encoder, df):
 
 
 def main():
-    df = load_data('C:/Users/sokky/Downloads/ML-assignment/wheather_data.csv')
+    df = load_data('wheather_data.csv')
     initial_df = df
 
     calculate_statistics(df)
@@ -305,6 +305,7 @@ def main():
     print("\nModel Evaluation Results:")
     print(results_df)
 
+    # Use a GUI window to show the information of each network that have been created
     show_results_window(results_df)
 
 
